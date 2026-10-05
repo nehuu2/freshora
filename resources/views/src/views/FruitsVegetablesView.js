@@ -404,7 +404,13 @@ export default function FruitsVegetablesView({ navigation }) {
                   <TouchableOpacity
                     key={item.id}
                     style={[styles.filterItem, isActive && styles.filterItemActive]}
-                    onPress={() => setSelectedFilter(item.name)}
+                    onPress={() => {
+                      if (item.name === 'Fresh Vegetables' && navigation && typeof navigation.navigate === 'function') {
+                        navigation.navigate('FreshVegetables');
+                      } else {
+                        setSelectedFilter(item.name);
+                      }
+                    }}
                     activeOpacity={0.7}
                   >
                     <View style={styles.filterIconWrap}>
@@ -518,7 +524,12 @@ export default function FruitsVegetablesView({ navigation }) {
 
             {/* H. SECOND BANNER ("Go Organic Go Healthy") */}
             <View style={styles.organicBannerContainer}>
-              <View style={styles.organicBannerLeft}>
+              <Image
+                source={require('../../assets/banner_organic_veg_hero.png')}
+                style={styles.organicBannerBgImage}
+                resizeMode="cover"
+              />
+              <View style={styles.organicBannerContent}>
                 <Text style={styles.organicBannerTitle}>Go Organic{'\n'}Go Healthy</Text>
                 <Text style={styles.organicBannerSub}>
                   Naturally grown. Better for you.
@@ -530,13 +541,6 @@ export default function FruitsVegetablesView({ navigation }) {
                 >
                   <Text style={styles.organicBannerBtnText}>Explore Organic →</Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.organicBannerRight}>
-                <Image
-                  source={require('../../assets/banner_organic_veg_art.png')}
-                  style={styles.organicBannerImage}
-                  resizeMode="contain"
-                />
               </View>
             </View>
 

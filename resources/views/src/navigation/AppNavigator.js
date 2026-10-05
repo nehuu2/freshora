@@ -10,6 +10,7 @@ import CategoriesView from '../views/CategoriesView';
 import AllCategoriesView from '../views/AllCategoriesView';
 import CategoryProductsView from '../views/CategoryProductsView';
 import FruitsVegetablesView from '../views/FruitsVegetablesView';
+import FreshVegetablesView from '../views/FreshVegetablesView';
 import UsersView from '../views/UsersView';
 
 const Stack = createNativeStackNavigator();
@@ -76,6 +77,11 @@ export default function AppNavigator() {
       <Stack.Screen
         name="FruitsVegetables"
         component={FruitsVegetablesView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FreshVegetables"
+        component={FreshVegetablesView}
         options={{ headerShown: false }}
       />
       <Stack.Screen
