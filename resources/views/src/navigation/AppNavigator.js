@@ -6,6 +6,8 @@ import OnboardingPage4View from '../views/OnboardingPage4View';
 import OnboardingPage5View from '../views/OnboardingPage5View';
 import OnboardingPage6View from '../views/OnboardingPage6View';
 import OnboardingPage7View from '../views/OnboardingPage7View';
+import CategoriesView from '../views/CategoriesView';
+import CategoryProductsView from '../views/CategoryProductsView';
 import UsersView from '../views/UsersView';
 
 const Stack = createNativeStackNavigator();
@@ -52,6 +54,16 @@ export default function AppNavigator() {
       <Stack.Screen
         name="Onboarding7"
         component={OnboardingPage7View}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Categories"
+        component={CategoriesView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CategoryProducts"
+        component={CategoryProductsView}
         options={{ headerShown: false }}
       />
       <Stack.Screen

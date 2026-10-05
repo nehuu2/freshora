@@ -24,13 +24,15 @@ export default function OnboardingPage7View({ navigation }) {
   };
 
   const handleCategoryPress = (categoryName) => {
-    // Category click handler
+    if (navigation && typeof navigation.navigate === 'function') {
+      navigation.navigate('Categories');
+    }
   };
 
   const handleShopNowPress = () => {
     if (navigation) {
       if (typeof navigation.navigate === 'function') {
-        navigation.navigate('Users');
+        navigation.navigate('Categories');
       }
     }
   };
@@ -1501,7 +1503,11 @@ export default function OnboardingPage7View({ navigation }) {
             </TouchableOpacity>
 
             {/* 2. CATEGORIES */}
-            <TouchableOpacity style={styles.navTabItem} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.navTabItem}
+              activeOpacity={0.8}
+              onPress={() => navigation && navigation.navigate && navigation.navigate('Categories')}
+            >
               <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <Rect x={3} y={3} width={7} height={7} rx={1.5} />
                 <Rect x={14} y={3} width={7} height={7} rx={1.5} />
@@ -1512,7 +1518,11 @@ export default function OnboardingPage7View({ navigation }) {
             </TouchableOpacity>
 
             {/* 3. ORDERS */}
-            <TouchableOpacity style={styles.navTabItem} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.navTabItem}
+              activeOpacity={0.8}
+              onPress={() => navigation && navigation.navigate && navigation.navigate('CategoryProducts', { categoryName: 'Orders' })}
+            >
               <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <Path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <Path d="M3 6h18" />
@@ -1522,7 +1532,11 @@ export default function OnboardingPage7View({ navigation }) {
             </TouchableOpacity>
 
             {/* 4. OFFERS (WITH RED NOTIFICATION BADGE) */}
-            <TouchableOpacity style={styles.navTabItem} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.navTabItem}
+              activeOpacity={0.8}
+              onPress={() => navigation && navigation.navigate && navigation.navigate('CategoryProducts', { categoryName: 'Special Offers' })}
+            >
               <View style={styles.navIconContainer}>
                 <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                   <Path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -1534,7 +1548,11 @@ export default function OnboardingPage7View({ navigation }) {
             </TouchableOpacity>
 
             {/* 5. PROFILE */}
-            <TouchableOpacity style={styles.navTabItem} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.navTabItem}
+              activeOpacity={0.8}
+              onPress={() => navigation && navigation.navigate && navigation.navigate('Users')}
+            >
               <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <Circle cx={12} cy={7} r={4} />
