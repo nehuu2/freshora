@@ -242,7 +242,7 @@ export default function FruitsVegetablesView({ navigation }) {
 
   const handleCartPress = () => {
     if (navigation && typeof navigation.navigate === 'function') {
-      navigation.navigate('CategoryProducts', { categoryName: 'Cart' });
+      navigation.navigate('Cart');
     }
   };
 
@@ -263,7 +263,7 @@ export default function FruitsVegetablesView({ navigation }) {
     } else if (tab === 'Offers') {
       navigation.navigate('CategoryProducts', { categoryName: 'Special Offers' });
     } else if (tab === 'Profile') {
-      navigation.navigate('Users');
+      navigation.navigate('Profile');
     }
   };
 

@@ -156,7 +156,7 @@ export default function AllCategoriesView({ navigation }) {
     } else if (tab === 'Offers') {
       navigation.navigate('CategoryProducts', { categoryName: 'Special Offers' });
     } else if (tab === 'Profile') {
-      navigation.navigate('Users');
+      navigation.navigate('Profile');
     }
   };
 

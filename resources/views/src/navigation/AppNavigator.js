@@ -11,6 +11,11 @@ import AllCategoriesView from '../views/AllCategoriesView';
 import CategoryProductsView from '../views/CategoryProductsView';
 import FruitsVegetablesView from '../views/FruitsVegetablesView';
 import FreshVegetablesView from '../views/FreshVegetablesView';
+import ProductDetailsView from '../views/ProductDetailsView';
+import CartView from '../views/CartView';
+import CheckoutView from '../views/CheckoutView';
+import OrderSuccessView from '../views/OrderSuccessView';
+import ProfileView from '../views/ProfileView';
 import UsersView from '../views/UsersView';
 
 const Stack = createNativeStackNavigator();
@@ -82,6 +87,31 @@ export default function AppNavigator() {
       <Stack.Screen
         name="FreshVegetables"
         component={FreshVegetablesView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ProductDetails"
+        component={ProductDetailsView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cart"
+        component={CartView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Checkout"
+        component={CheckoutView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="OrderSuccess"
+        component={OrderSuccessView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileView}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -1551,7 +1551,7 @@ export default function OnboardingPage7View({ navigation }) {
             <TouchableOpacity
               style={styles.navTabItem}
               activeOpacity={0.8}
-              onPress={() => navigation && navigation.navigate && navigation.navigate('Users')}
+              onPress={() => navigation && navigation.navigate && navigation.navigate('Profile')}
             >
               <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#64748B" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />

@@ -281,7 +281,7 @@ export default function FreshVegetablesView({ navigation }) {
 
   const handleCartPress = () => {
     if (navigation && typeof navigation.navigate === 'function') {
-      navigation.navigate('CategoryProducts', { categoryName: 'Cart' });
+      navigation.navigate('Cart');
     }
   };
 
@@ -302,7 +302,7 @@ export default function FreshVegetablesView({ navigation }) {
     } else if (tab === 'Offers') {
       navigation.navigate('CategoryProducts', { categoryName: 'Special Offers' });
     } else if (tab === 'Profile') {
-      navigation.navigate('Users');
+      navigation.navigate('Profile');
     }
   };
 
@@ -609,7 +609,11 @@ export default function FreshVegetablesView({ navigation }) {
                   return (
                     <View key={product.id} style={styles.productCard}>
                       {/* CARD TOP AREA WITH IMAGE & BADGES */}
-                      <View style={styles.cardImageWrapper}>
+                      <TouchableOpacity
+                        style={styles.cardImageWrapper}
+                        onPress={() => navigation.navigate('ProductDetails', { product })}
+                        activeOpacity={0.85}
+                      >
                         {product.discount ? (
                           <View style={styles.discountBadge}>
                             <Text style={styles.discountText}>{product.discount}</Text>
@@ -640,10 +644,14 @@ export default function FreshVegetablesView({ navigation }) {
                           style={styles.productImage}
                           resizeMode="contain"
                         />
-                      </View>
+                      </TouchableOpacity>
 
                       {/* CARD DETAILS */}
-                      <View style={styles.cardInfo}>
+                      <TouchableOpacity
+                        style={styles.cardInfo}
+                        onPress={() => navigation.navigate('ProductDetails', { product })}
+                        activeOpacity={0.85}
+                      >
                         <Text style={styles.productName} numberOfLines={1}>
                           {product.name}
                         </Text>
@@ -655,7 +663,7 @@ export default function FreshVegetablesView({ navigation }) {
                             <Text style={styles.oldPrice}>₹{product.oldPrice}</Text>
                           ) : null}
                         </View>
-                      </View>
+                      </TouchableOpacity>
 
                       {/* ADD BUTTON */}
                       <TouchableOpacity
@@ -683,14 +691,22 @@ export default function FreshVegetablesView({ navigation }) {
 
                   return (
                     <View key={product.id} style={styles.listCard}>
-                      <View style={styles.listImageWrap}>
+                      <TouchableOpacity
+                        style={styles.listImageWrap}
+                        onPress={() => navigation.navigate('ProductDetails', { product })}
+                        activeOpacity={0.85}
+                      >
                         <Image
                           source={product.image}
                           style={styles.listImage}
                           resizeMode="contain"
                         />
-                      </View>
-                      <View style={styles.listDetails}>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.listDetails}
+                        onPress={() => navigation.navigate('ProductDetails', { product })}
+                        activeOpacity={0.85}
+                      >
                         <Text style={styles.listName}>{product.name}</Text>
                         <Text style={styles.listWeight}>{product.unit}</Text>
                         <View style={styles.listPriceRow}>
@@ -699,7 +715,7 @@ export default function FreshVegetablesView({ navigation }) {
                             <Text style={styles.listOldPrice}>₹{product.oldPrice}</Text>
                           ) : null}
                         </View>
-                      </View>
+                      </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.listAddBtn, quantityAdded > 0 && styles.addBtnAdded]}
                         onPress={() => handleAddToCart(product.id)}
