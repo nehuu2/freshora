@@ -7,7 +7,9 @@ import OnboardingPage5View from '../views/OnboardingPage5View';
 import OnboardingPage6View from '../views/OnboardingPage6View';
 import OnboardingPage7View from '../views/OnboardingPage7View';
 import CategoriesView from '../views/CategoriesView';
+import AllCategoriesView from '../views/AllCategoriesView';
 import CategoryProductsView from '../views/CategoryProductsView';
+import FruitsVegetablesView from '../views/FruitsVegetablesView';
 import UsersView from '../views/UsersView';
 
 const Stack = createNativeStackNavigator();
@@ -62,8 +64,18 @@ export default function AppNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="AllCategories"
+        component={AllCategoriesView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="CategoryProducts"
         component={CategoryProductsView}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FruitsVegetables"
+        component={FruitsVegetablesView}
         options={{ headerShown: false }}
       />
       <Stack.Screen

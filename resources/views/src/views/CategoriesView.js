@@ -32,7 +32,13 @@ export default function CategoriesView({ navigation }) {
 
   const handleCategoryPress = (categoryName) => {
     if (navigation && typeof navigation.navigate === 'function') {
-      navigation.navigate('CategoryProducts', { categoryName });
+      if (categoryName === 'All Categories') {
+        navigation.navigate('AllCategories');
+      } else if (categoryName === 'Fruits & Vegetables') {
+        navigation.navigate('FruitsVegetables');
+      } else {
+        navigation.navigate('CategoryProducts', { categoryName });
+      }
     }
   };
 
@@ -44,7 +50,7 @@ export default function CategoriesView({ navigation }) {
 
   const handleSeeAllPress = () => {
     if (navigation && typeof navigation.navigate === 'function') {
-      navigation.navigate('CategoryProducts', { categoryName: 'All Categories' });
+      navigation.navigate('AllCategories');
     }
   };
 
@@ -167,13 +173,13 @@ export default function CategoriesView({ navigation }) {
             {/* C. PAGE TITLE & FRESH CHOICES BADGE */}
             <View style={styles.titleSection}>
               <View style={styles.titleLeftCol}>
-                <Text style={styles.mainHeadingText}>Shop by Categories</Text>
-                <Text style={styles.subtitleText}>Everything you need, all in one place.</Text>
+                <Text style={styles.mainHeadingText} numberOfLines={1}>Shop by Categories</Text>
+                <Text style={styles.subtitleText} numberOfLines={1}>Everything you need, all in one place.</Text>
               </View>
 
               {/* FRESH CHOICES PILL BADGE */}
               <View style={styles.freshChoicesPill}>
-                <Svg width={18} height={18} viewBox="0 0 24 24" fill="#16A34A">
+                <Svg width={15} height={15} viewBox="0 0 24 24" fill="#16A34A">
                   <Path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
                 </Svg>
                 <View style={styles.pillTextCol}>
