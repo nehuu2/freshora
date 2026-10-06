@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,15 +11,19 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line, Polyline, Polygon } from 'react-native-svg';
 import { styles } from './CheckoutView.styles';
+import { cartService } from '../services/cartService';
+import { orderService } from '../services/orderService';
+import { getProductAsset } from '../constants/assetMap';
 
 export default function CheckoutView({ navigation }) {
   const [selectedDeliveryOption, setSelectedDeliveryOption] = useState('standard'); // 'standard' | 'express'
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('upi'); // 'upi' | 'card' | 'wallet' | 'cod'
 
   // Order Items matching the visual reference (Screen 6: Checkout)
-  const orderItems = [
+  const [orderItems, setOrderItems] = useState([
     {
       id: 'chk_tomato',
+      product_id: 3,
       name: 'Tomato',
       unit: '1 kg',
       quantity: 1,
@@ -29,6 +33,7 @@ export default function CheckoutView({ navigation }) {
     },
     {
       id: 'chk_banana',
+      product_id: 2,
       name: 'Banana',
       unit: '1 kg',
       quantity: 2,
@@ -38,6 +43,7 @@ export default function CheckoutView({ navigation }) {
     },
     {
       id: 'chk_potato',
+      product_id: 4,
       name: 'Potato',
       unit: '1 kg',
       quantity: 1,
@@ -47,6 +53,7 @@ export default function CheckoutView({ navigation }) {
     },
     {
       id: 'chk_onion',
+      product_id: 5,
       name: 'Onion',
       unit: '1 kg',
       quantity: 1,
@@ -54,16 +61,47 @@ export default function CheckoutView({ navigation }) {
       oldPrice: null,
       image: require('../../assets/veg_onion.png'),
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    cartService.getCart().then(cartData => {
+      if (cartData && Array.isArray(cartData.items) && cartData.items.length > 0) {
+        const mapped = cartData.items.map(item => ({
+          ...item,
+          id: item.code || item.id,
+          product_id: item.product_id,
+          name: item.name,
+          unit: item.unit,
+          quantity: item.quantity,
+          price: item.price * item.quantity,
+          oldPrice: item.oldPrice ? item.oldPrice * item.quantity : null,
+          image: getProductAsset(item.image),
+        }));
+        setOrderItems(mapped);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Price calculations
-  const totalMrp = 159;
-  const totalDiscount = 23;
+  const itemsSubtotal = orderItems.reduce((sum, item) => sum + item.price, 0);
+  const totalMrp = orderItems.reduce((sum, item) => sum + (item.oldPrice || item.price), 0);
+  const totalDiscount = Math.max(0, totalMrp - itemsSubtotal);
   const deliveryCharge = selectedDeliveryOption === 'express' ? 40 : 0;
-  const totalAmount = 136 + deliveryCharge;
+  const totalAmount = itemsSubtotal + deliveryCharge;
 
-  const handlePlaceOrder = () => {
-    navigation.navigate('OrderSuccess');
+  const handlePlaceOrder = async () => {
+    try {
+      const orderPayload = {
+        delivery_option: selectedDeliveryOption,
+        payment_method: selectedPaymentMethod,
+        delivery_address: 'Sector 67, Gurugram 122001',
+        items: orderItems,
+      };
+      const createdOrder = await orderService.placeOrder(orderPayload);
+      navigation.navigate('OrderSuccess', { order: createdOrder });
+    } catch (e) {
+      navigation.navigate('OrderSuccess');
+    }
   };
 
   const handleChangeAddress = () => {

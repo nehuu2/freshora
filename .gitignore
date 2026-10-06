@@ -1,18 +1,21 @@
 node_modules/
-# .env
-# .env.local
-# resources/views/.env
-# resources/views/.expo/
-# resources/views/dist/
-# resources/views/android/
-# resources/views/ios/
-# resources/views/build-output/
-# resources/views/signing/upload-keystore.jks
-# resources/views/signing/google-services.json
-# resources/views/signing/GoogleService-Info.plist
-# resources/views/signing/ExportOptions.plist
-# public/index.html
-# public/_expo/
-# public/assets/
+.env
+.env.local
+resources/views/.env
+resources/views/.expo/
+resources/views/dist/
+resources/views/android/
+resources/views/ios/
+resources/views/build-output/
+resources/views/signing/upload-keystore.jks
+resources/views/signing/google-services.json
+resources/views/signing/GoogleService-Info.plist
+resources/views/signing/ExportOptions.plist
+database.sqlite
+database_test.sqlite
+freshora.sqlite
+freshora_test.sqlite
+*.sqlite
 *.log
 .DS_Store
+

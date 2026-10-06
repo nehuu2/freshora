@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { styles } from './OnboardingPage5View.styles';
+import { authService } from '../services/authService';
 
 export default function OnboardingPage5View({ navigation }) {
   const [fullName, setFullName] = useState('');
@@ -21,7 +22,19 @@ export default function OnboardingPage5View({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(true);
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
+    if (fullName || mobileNumber) {
+      try {
+        await authService.register({
+          fullName: fullName || 'Aryan Mangla',
+          mobileNumber: mobileNumber || '+91 98765 43210',
+          email: email || undefined,
+          password: password || undefined,
+        });
+      } catch (err) {
+        // Continue to navigation even on network error
+      }
+    }
     if (navigation) {
       if (typeof navigation.navigate === 'function') {
         navigation.navigate('Onboarding6');

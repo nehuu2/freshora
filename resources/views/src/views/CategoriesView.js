@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,19 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line } from 'react-native-svg';
 import { styles } from './CategoriesView.styles';
+import { cartService } from '../services/cartService';
 
 export default function CategoriesView({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [cartCount, setCartCount] = useState(3);
+
+  useEffect(() => {
+    cartService.getCart().then(cart => {
+      if (cart && typeof cart.totalItemCount === 'number') {
+        setCartCount(cart.totalItemCount);
+      }
+    }).catch(() => {});
+  }, []);
 
   const handleLocationPress = () => {
     // Location picker handler
@@ -138,7 +148,7 @@ export default function CategoriesView({ navigation }) {
                     <Path d="M16 10a4 4 0 0 1-8 0" />
                   </Svg>
                   <View style={styles.cartBadge}>
-                    <Text style={styles.cartBadgeText}>3</Text>
+                    <Text style={styles.cartBadgeText}>{cartCount}</Text>
                   </View>
                 </TouchableOpacity>
               </View>

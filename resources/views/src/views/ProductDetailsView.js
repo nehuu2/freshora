@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line, Polyline, Polygon } from 'react-native-svg';
 import { styles } from './ProductDetailsView.styles';
+import { cartService } from '../services/cartService';
+import { productService } from '../services/productService';
 
 export default function ProductDetailsView({ navigation }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -20,6 +22,22 @@ export default function ProductDetailsView({ navigation }) {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [addedItems, setAddedItems] = useState({});
   const [pincode, setPincode] = useState('122001');
+
+  useEffect(() => {
+    cartService.getCart().then(cart => {
+      if (cart && typeof cart.totalItemCount === 'number') {
+        setCartCount(cart.totalItemCount);
+      }
+    }).catch(() => {});
+
+    cartService.getWishlist().then(wish => {
+      if (wish && Array.isArray(wish.productIds)) {
+        if (wish.productIds.includes(3) || wish.productIds.includes('p3')) {
+          setIsWishlisted(true);
+        }
+      }
+    }).catch(() => {});
+  }, []);
 
   // 1. Gallery images
   const galleryImages = [
@@ -75,6 +93,12 @@ export default function ProductDetailsView({ navigation }) {
   const handleAddToCart = () => {
     setCartCount(prev => prev + 1);
     setAddedItems(prev => ({ ...prev, main: true }));
+    cartService.addToCart({
+      product_code: 'p3',
+      quantity: 1,
+      unit: currentOption.weight,
+      price: currentOption.price,
+    }).catch(() => {});
   };
 
   const handleToggleRecItem = (id) => {
@@ -82,6 +106,13 @@ export default function ProductDetailsView({ navigation }) {
       const isAdded = !prev[id];
       if (!isAdded) {
         setCartCount(c => c + 1);
+        const prod = recommendedProducts.find(p => p.id === id);
+        cartService.addToCart({
+          product_code: id.replace('rec_', 'v_'),
+          quantity: 1,
+          unit: prod ? prod.unit : '1 kg',
+          price: prod ? parseFloat(prod.price.replace('₹', '')) : 25,
+        }).catch(() => {});
       } else {
         setCartCount(c => Math.max(0, c - 1));
       }

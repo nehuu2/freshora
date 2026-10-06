@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,15 +11,18 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line, Polyline, Polygon } from 'react-native-svg';
 import { styles } from './OrderSuccessView.styles';
+import { orderService } from '../services/orderService';
+import { getProductAsset } from '../constants/assetMap';
 
-export default function OrderSuccessView({ navigation }) {
+export default function OrderSuccessView({ route, navigation }) {
   const [selectedTrackStep, setSelectedTrackStep] = useState(0); // 0..3
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showOffersModal, setShowOffersModal] = useState(false);
+  const [orderNumber, setOrderNumber] = useState('ORD123456');
 
   // 4 Ordered items
-  const orderItems = [
+  const [orderItems, setOrderItems] = useState([
     {
       id: 'ord_tomato',
       name: 'Tomato',
@@ -52,7 +55,45 @@ export default function OrderSuccessView({ navigation }) {
       oldPrice: null,
       image: require('../../assets/veg_onion.png'),
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    const paramOrder = route?.params?.order;
+    if (paramOrder) {
+      if (paramOrder.order_number) setOrderNumber(paramOrder.order_number);
+      if (Array.isArray(paramOrder.items) && paramOrder.items.length > 0) {
+        setOrderItems(
+          paramOrder.items.map(item => ({
+            id: item.id || item.product_name,
+            name: item.product_name || item.name,
+            unit: item.unit || '1 kg',
+            price: item.price,
+            oldPrice: item.old_price,
+            image: getProductAsset(item.image_url || item.image),
+          }))
+        );
+      }
+    } else {
+      orderService.getOrders().then(orders => {
+        if (Array.isArray(orders) && orders.length > 0) {
+          const latest = orders[0];
+          setOrderNumber(latest.order_number);
+          if (Array.isArray(latest.items) && latest.items.length > 0) {
+            setOrderItems(
+              latest.items.map(item => ({
+                id: item.id || item.product_name,
+                name: item.product_name || item.name,
+                unit: item.unit || '1 kg',
+                price: item.price,
+                oldPrice: item.old_price,
+                image: getProductAsset(item.image_url || item.image),
+              }))
+            );
+          }
+        }
+      }).catch(() => {});
+    }
+  }, [route?.params?.order]);
 
   const trackMilestones = [
     {

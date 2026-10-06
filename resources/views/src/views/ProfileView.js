@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,31 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line, Polyline, Polygon } from 'react-native-svg';
 import { styles } from './ProfileView.styles';
+import { authService } from '../services/authService';
+import { cartService } from '../services/cartService';
 
 export default function ProfileView({ navigation }) {
   const [userName, setUserName] = useState('Aryan Mangla');
   const [userPhone, setUserPhone] = useState('+91 98765 43210');
   const [userEmail, setUserEmail] = useState('aryan.mangla@example.com');
+  const [cartCount, setCartCount] = useState(4);
   const [activeModal, setActiveModal] = useState(null); // 'edit' | 'benefits' | 'wallet' | 'offers' | 'refer' | 'support' | 'settings' | 'address'
+
+  useEffect(() => {
+    authService.getMe().then(user => {
+      if (user) {
+        if (user.name) setUserName(user.name);
+        if (user.phone) setUserPhone(user.phone);
+        if (user.email) setUserEmail(user.email);
+      }
+    }).catch(() => {});
+
+    cartService.getCart().then(cart => {
+      if (cart && typeof cart.totalItemCount === 'number') {
+        setCartCount(cart.totalItemCount);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Menu items list
   const menuItems = [
@@ -158,7 +177,7 @@ export default function ProfileView({ navigation }) {
                     <Path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
                   </Svg>
                   <View style={styles.cartBadge}>
-                    <Text style={styles.cartBadgeText}>4</Text>
+                    <Text style={styles.cartBadgeText}>{cartCount}</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -619,7 +638,12 @@ export default function ProfileView({ navigation }) {
 
             <TouchableOpacity
               style={styles.modalPrimaryBtn}
-              onPress={() => setActiveModal(null)}
+              onPress={() => {
+                if (activeModal === 'edit') {
+                  authService.updateProfile({ name: userName, phone: userPhone, email: userEmail }).catch(() => {});
+                }
+                setActiveModal(null);
+              }}
             >
               <Text style={styles.modalPrimaryBtnText}>Save & Close</Text>
             </TouchableOpacity>

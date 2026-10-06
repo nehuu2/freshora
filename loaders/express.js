@@ -37,19 +37,17 @@ export default (app) => {
     })
   );
 
-  // Static assets (Expo web build + public files)
-  app.use(express.static(path.join(rootDir, 'public')));
+  // Root health endpoint (Phase 8)
+  app.get('/', (req, res) => {
+    res.json({
+      name: 'Freshora API',
+      status: 'healthy',
+      version: '1.0.0',
+    });
+  });
 
   // API routes (like Laravel api.php)
   app.use('/api', apiRoutes);
-
-  // SPA fallback: serve Expo web build (public/index.html after npm run build:web)
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api')) return next();
-    res.sendFile(webIndex, (err) => {
-      if (err) next();
-    });
-  });
 
   // 404 for unmatched /api routes
   app.use(notFoundHandler);

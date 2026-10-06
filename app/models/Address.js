@@ -1,55 +1,61 @@
 /**
- * User Model
+ * Address Model
  */
 
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../config/db.js';
 
-const User = sequelize.define(
-  'User',
+const Address = sequelize.define(
+  'Address',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
-      type: DataTypes.STRING(255),
+    user_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
-    email: {
+    title: {
+      type: DataTypes.STRING(50),
+      defaultValue: 'Home',
+    },
+    recipient_name: {
       type: DataTypes.STRING(255),
       allowNull: true,
-      unique: true,
     },
     phone: {
       type: DataTypes.STRING(50),
       allowNull: true,
-      unique: true,
     },
-    password: {
+    address_line: {
       type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    sector: {
+      type: DataTypes.STRING(100),
       allowNull: true,
     },
-    avatar: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
+    city: {
+      type: DataTypes.STRING(100),
+      defaultValue: 'Gurugram',
     },
-    role: {
-      type: DataTypes.STRING(50),
-      defaultValue: 'customer',
+    state: {
+      type: DataTypes.STRING(100),
+      defaultValue: 'Haryana',
     },
-    is_gold_member: {
+    pincode: {
+      type: DataTypes.STRING(20),
+      defaultValue: '122001',
+    },
+    is_default: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    wallet_balance: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 250.00,
-    },
   },
   {
-    tableName: 'users',
+    tableName: 'addresses',
     timestamps: true,
     underscored: true,
     createdAt: 'created_at',
@@ -57,4 +63,4 @@ const User = sequelize.define(
   }
 );
 
-export default User;
+export default Address;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,15 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line, Polyline } from 'react-native-svg';
 import { styles } from './CartView.styles';
+import { cartService } from '../services/cartService';
+import { getProductAsset } from '../constants/assetMap';
 
 export default function CartView({ navigation }) {
   // Initial cart items matching the visual reference (Screen 5: My Cart)
   const [cartItems, setCartItems] = useState([
     {
       id: 'item_tomato',
+      cart_item_id: 1,
       name: 'Tomato',
       unit: '1 kg',
       price: 32,
@@ -28,6 +31,7 @@ export default function CartView({ navigation }) {
     },
     {
       id: 'item_banana',
+      cart_item_id: 2,
       name: 'Banana',
       unit: '1 kg',
       price: 48,
@@ -38,6 +42,7 @@ export default function CartView({ navigation }) {
     },
     {
       id: 'item_potato',
+      cart_item_id: 3,
       name: 'Potato',
       unit: '1 kg',
       price: 22,
@@ -48,6 +53,7 @@ export default function CartView({ navigation }) {
     },
     {
       id: 'item_onion',
+      cart_item_id: 4,
       name: 'Onion',
       unit: '1 kg',
       price: 28,
@@ -57,6 +63,24 @@ export default function CartView({ navigation }) {
       image: require('../../assets/veg_onion.png'),
     },
   ]);
+
+  const loadCartFromBackend = () => {
+    cartService.getCart().then(cartData => {
+      if (cartData && Array.isArray(cartData.items) && cartData.items.length > 0) {
+        const mapped = cartData.items.map(item => ({
+          ...item,
+          id: item.code || item.id,
+          cart_item_id: item.cart_item_id || item.id,
+          image: getProductAsset(item.image),
+        }));
+        setCartItems(mapped);
+      }
+    }).catch(() => {});
+  };
+
+  useEffect(() => {
+    loadCartFromBackend();
+  }, []);
 
   // "You might also need" cross-sell products
   const crossSellProducts = [
@@ -116,28 +140,44 @@ export default function CartView({ navigation }) {
 
   // Handlers
   const handleIncreaseQty = (id) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+    setCartItems(prev => {
+      const target = prev.find(item => item.id === id || item.cart_item_id === id);
+      if (target) {
+        cartService.updateQuantity(target.cart_item_id || target.id, target.quantity + 1, target.unit).catch(() => {});
+      }
+      return prev.map(item =>
+        item.id === id || item.cart_item_id === id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    });
   };
 
   const handleDecreaseQty = (id) => {
-    setCartItems(prev =>
-      prev
+    setCartItems(prev => {
+      const target = prev.find(item => item.id === id || item.cart_item_id === id);
+      if (target) {
+        if (target.quantity <= 1) {
+          cartService.removeFromCart(target.cart_item_id || target.id).catch(() => {});
+        } else {
+          cartService.updateQuantity(target.cart_item_id || target.id, target.quantity - 1, target.unit).catch(() => {});
+        }
+      }
+      return prev
         .map(item => {
-          if (item.id === id) {
+          if (item.id === id || item.cart_item_id === id) {
             return { ...item, quantity: item.quantity - 1 };
           }
           return item;
         })
-        .filter(item => item.quantity > 0)
-    );
+        .filter(item => item.quantity > 0);
+    });
   };
 
   const handleRemoveItem = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+    const target = cartItems.find(item => item.id === id || item.cart_item_id === id);
+    if (target) {
+      cartService.removeFromCart(target.cart_item_id || target.id).catch(() => {});
+    }
+    setCartItems(prev => prev.filter(item => item.id !== id && item.cart_item_id !== id));
   };
 
   const handleClearCart = () => {
@@ -146,12 +186,25 @@ export default function CartView({ navigation }) {
       'Are you sure you want to remove all items from your cart?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear All', style: 'destructive', onPress: () => setCartItems([]) },
+        {
+          text: 'Clear All',
+          style: 'destructive',
+          onPress: () => {
+            cartService.clearCart().catch(() => {});
+            setCartItems([]);
+          },
+        },
       ]
     );
   };
 
   const handleAddCrossSell = (prod) => {
+    cartService.addToCart({
+      product_code: prod.id,
+      quantity: 1,
+      unit: prod.unit,
+      price: prod.price,
+    }).catch(() => {});
     setCartItems(prev => {
       const existing = prev.find(item => item.id === prod.id);
       if (existing) {

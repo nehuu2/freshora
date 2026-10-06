@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,22 @@ import {
 } from 'react-native';
 import Svg, { Path, Rect, Circle, Line } from 'react-native-svg';
 import { styles } from './FruitsVegetablesView.styles';
+import { productService } from '../services/productService';
+import { cartService } from '../services/cartService';
 
 export default function FruitsVegetablesView({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [cartCount, setCartCount] = useState(3);
   const [addedItems, setAddedItems] = useState({});
+
+  useEffect(() => {
+    cartService.getCart().then(cart => {
+      if (cart && typeof cart.totalItemCount === 'number') {
+        setCartCount(cart.totalItemCount);
+      }
+    }).catch(() => {});
+  }, []);
 
   // 1. FILTER CATEGORIES
   const filterCategories = [
@@ -238,6 +248,13 @@ export default function FruitsVegetablesView({ navigation }) {
       ...prev,
       [productId]: (prev[productId] || 0) + 1,
     }));
+    const prod = allProducts.find(p => p.id === productId);
+    cartService.addToCart({
+      product_code: productId,
+      quantity: 1,
+      unit: prod ? prod.unit : '1 kg',
+      price: prod ? prod.price : 0,
+    }).catch(() => {});
   };
 
   const handleCartPress = () => {

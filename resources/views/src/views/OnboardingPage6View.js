@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { styles } from './OnboardingPage6View.styles';
+import { authService } from '../services/authService';
 
 export default function OnboardingPage6View({ navigation }) {
   const [mobileNumber, setMobileNumber] = useState('');
@@ -37,7 +38,15 @@ export default function OnboardingPage6View({ navigation }) {
     }
   };
 
-  const handleLoginSubmit = () => {
+  const handleLoginSubmit = async () => {
+    try {
+      await authService.login({
+        mobileNumber: mobileNumber || '+91 98765 43210',
+        password: password || 'password123',
+      });
+    } catch (err) {
+      // Continue to navigation
+    }
     if (navigation) {
       if (typeof navigation.navigate === 'function') {
         navigation.navigate('Onboarding7');
